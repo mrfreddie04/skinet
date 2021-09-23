@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http';
 import { EMPTY, Observable, throwError } from 'rxjs';
 import { NavigationBehaviorOptions, Router } from '@angular/router';
-import { catchError } from 'rxjs/operators';
+import { catchError, delay } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
 @Injectable()

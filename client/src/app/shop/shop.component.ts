@@ -17,9 +17,9 @@ interface PageChangedEventArgs {
 })
 export class ShopComponent implements OnInit {
   @ViewChild("search", {static: false}) searchTerm: ElementRef;
-  public products: IProduct[] = [];
-  public brands: IBrand[] = [];
-  public types: IType[] = [];
+  public products: IProduct[];
+  public brands: IBrand[];
+  public types: IType[];
   public shopParams: ShopParams = new ShopParams();
   public totalCount: number;
   public sortOptions = [

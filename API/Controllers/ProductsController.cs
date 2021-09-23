@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
@@ -28,6 +27,7 @@ namespace API.Controllers
             IMapper mapper
         )
         {
+            Console.WriteLine($"Product Controller Constructor");
             _productsRepo = productsRepo;
             _productBrandRepo = productBrandRepo;
             _productTypeRepo = productTypeRepo;
@@ -49,7 +49,7 @@ namespace API.Controllers
             (
                 productParams.PageIndex,
                 productParams.PageSize,
-                totalItems,
+                totalItems ,
                 _mapper.Map<IReadOnlyList<Product>, IReadOnlyList<ProductReadDto>>(products)
             );
 

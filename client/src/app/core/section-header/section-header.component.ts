@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
-import { BreadcrumbDefinition, BreadcrumbService } from 'xng-breadcrumb';
-import { filter, map, tap } from 'rxjs/operators';
+import { BreadcrumbService } from 'xng-breadcrumb';
+import { map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-section-header',

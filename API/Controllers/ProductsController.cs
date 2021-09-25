@@ -27,7 +27,7 @@ namespace API.Controllers
             IMapper mapper
         )
         {
-            Console.WriteLine($"Product Controller Constructor");
+            //Console.WriteLine($"Product Controller Constructor");
             _productsRepo = productsRepo;
             _productBrandRepo = productBrandRepo;
             _productTypeRepo = productTypeRepo;

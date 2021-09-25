@@ -6,6 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Identity;
+using Core.Entities.Identity;
+using Infrastructure.Identity;
 
 namespace API
 {
@@ -21,14 +24,21 @@ namespace API
                 var loggerFactory = services.GetRequiredService<ILoggerFactory>();
 
                 try {
-                    var context = services.GetRequiredService<StoreContext>();
-
-                    //Run pending migrations & create db (if it does not already exist)
+                    //Migrate Store Db  - Run pending migrations & create db (if it does not already exist)
+                    var context = services.GetRequiredService<StoreContext>();                    
                     await context.Database.MigrateAsync();
 
-                    //Seed the data
+                    //Seed Application data into StoreContext bound DB - SkiNet.db
                     await StoreContextSeed.SeedAsync(context, loggerFactory);
 
+
+                    //Migrate Identity Db - Run pending migrations & create db (if it does not already exist)
+                    var identityContext = services.GetRequiredService<AppIdentityDbContext>();
+                    await identityContext.Database.MigrateAsync();
+
+                    //Seed Identity data (users) 
+                    var userManager = services.GetRequiredService<UserManager<AppUser>>();
+                    await AppIdentityDbContextSeed.SeedUserAsync(userManager);
                 }
                 catch(Exception ex) {
                     var logger = loggerFactory.CreateLogger<Program>();

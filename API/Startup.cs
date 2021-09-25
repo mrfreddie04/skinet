@@ -8,6 +8,7 @@ using API.Helpers;
 using API.Middleware;
 using API.Extensions;
 using StackExchange.Redis;
+using Infrastructure.Identity;
 
 namespace API
 {
@@ -26,9 +27,13 @@ namespace API
             //services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
+
             services.AddDbContext<StoreContext>( opt => {                
                 opt.UseSqlite(_config.GetConnectionString("DefaultConnection"));
             });
+            services.AddDbContext<AppIdentityDbContext>( opt => {                
+                opt.UseSqlite(_config.GetConnectionString("IdentityConnection"));
+            });            
 
             services.AddSingleton<IConnectionMultiplexer>( services => {
                 //Generic AddSingleton takes a Func<ISerProvider,T> argument (T= ConnectionMultiplexer)
@@ -39,6 +44,8 @@ namespace API
             });
 
             services.AddApplicationServices();
+
+            services.AddIdentityServices(_config);
 
             services.AddSwaggerDocumentation();
 
@@ -71,7 +78,9 @@ namespace API
             // app.UseCors(policy => policy
             //     .AllowAnyHeader()
             //     .AllowAnyMethod()
-            //     .WithOrigins("https://localhost:4200"));            
+            //     .WithOrigins("https://localhost:4200"));        
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

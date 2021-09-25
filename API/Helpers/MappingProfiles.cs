@@ -17,6 +17,12 @@ namespace API.Helpers
             CreateMap<Address, AddressDto>();
 
             CreateMap<AddressDto, Address>();
+                // .ForMember( dest => dest.Id, opt => opt.Ignore())
+                // .ForMember( dest => dest.AppUserId, opt => opt.Ignore());
+
+            CreateMap<CustomerBasketDto, CustomerBasket>();
+
+            CreateMap<BasketItemDto, BasketItem>();
         }
     }
 }

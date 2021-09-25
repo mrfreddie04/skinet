@@ -61,9 +61,7 @@ namespace API.Controllers
         [HttpGet("emailexists")]
         public async Task<ActionResult<bool>> CheckEmailExists([FromQuery] string email)        
         {
-            var user = await _userManager.FindByEmailAsync(email);
-
-            return Ok((user != null));
+            return Ok(await CheckEmailExistsAsync(email));
         }        
 
         [Authorize]
@@ -84,8 +82,7 @@ namespace API.Controllers
             // var email = User.FindFirstValue(ClaimTypes.Email);
             // var user = await _userManager.FindByEmailAsync(email);
             var user = await _userManager.FindByEmailWithAddressAsync(User);
-            user.Address = _mapper.Map<AddressDto,Address>(address);
-
+            user.Address = _mapper.Map<AddressDto,Address>(address, user.Address);
             var result = await _userManager.UpdateAsync(user);
 
             if(!result.Succeeded)
@@ -119,6 +116,13 @@ namespace API.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<UserReadDto>> UserRegister(UserRegisterDto registerDto)
         {
+            if(await CheckEmailExistsAsync(registerDto.Email))
+            {
+                return BadRequest(new ApiValidationErrorResponse() {
+                    Errors = new [] {"Email address is in use"} 
+                }); 
+            }
+
             var user = new AppUser() 
             {
                 Email = registerDto.Email,
@@ -128,7 +132,7 @@ namespace API.Controllers
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
 
-            if(!result.Succeeded) return BadRequest(new ApiResponse(400)); //will provide detailed message later
+            if(!result.Succeeded) return BadRequest(new ApiResponse(400)); 
 
             var userDto = new UserReadDto() 
             {
@@ -140,6 +144,11 @@ namespace API.Controllers
             return Ok(userDto);
         }        
 
+        private async Task<bool> CheckEmailExistsAsync(string email)   
+        {
+            return ( await _userManager.FindByEmailAsync(email) != null);
+       
+        }
         
     }
 }

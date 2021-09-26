@@ -47,7 +47,29 @@
             class="cart-no">{{getQuantity(valuesObj.basket)}}
           </div>            
         </a>
-        <a class="btn btn-outline-secondary mr-2" href="#">Login</a>
-        <a class="btn btn-outline-secondary mr-3" href="#">Sign up</a>
+        <ng-container *ngIf="(currentUser$ | async) as currentUser; else signedout">
+          <div class="dropdown ml-3 mr-5" dropdown>
+            <a dropdownToggle type="button" class=" dropdown-toggle"style="cursor:pointer;">
+              <strong>Welcome {{currentUser.displayName}} <span class="caret"></span></strong>
+            </a>
+            <div *dropdownMenu class="dropdown-menu dropdown-menu-right" style="cursor:pointer;">
+              <a class="dropdown-item d-flex align-item-center py-2" routerLink="/basket">
+                <i class="fa fa-shopping-cart mr-3"></i> View Basket
+              </a>
+              <a class="dropdown-item d-flex align-item-center py-2" routerLink="/orders">
+                <i class="fa fa-history mr-3"></i> View Orders
+              </a>
+              <div class="divider dropdown-divider"></div>
+              <a class="dropdown-item d-flex align-item-center py-2" (click)="logout()">
+                <i class="fa fa-sign-out mr-3"></i> Logout
+              </a>              
+            </div>
+          </div>  
+        </ng-container>
+        <ng-template #signedout>
+          <a class="btn btn-outline-secondary mr-2" routerLink="/account/login">Login</a>
+          <a class="btn btn-outline-secondary mr-3" routerLink="/account/register">Sign up</a>  
+        </ng-template>	        
+
     </div>
 </header>

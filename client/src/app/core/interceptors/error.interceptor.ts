@@ -28,11 +28,11 @@ export class ErrorInterceptor implements HttpInterceptor {
               //throw error.error;
             }
             this.toastr.error(error.error.message,error.error.statusCode);
-            return EMPTY; //handling completed            
+            //return EMPTY; //handling completed            
           }          
           if( error.status === 401) {
             this.toastr.error(error.error.message,error.error.statusCode);
-            return EMPTY; //handling completed            
+            //return EMPTY; //handling completed            
           }            
           if( error.status === 404) {
             this.router.navigateByUrl("/not-found");

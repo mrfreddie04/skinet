@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Core.Entities;
 using System;
+using Core.Entities.OrderAggregate;
 
 namespace Infrastructure.Data
 {
@@ -39,7 +40,16 @@ namespace Infrastructure.Data
                     var products = JsonSerializer.Deserialize<List<Product>>(productsData);
                     context.Products.AddRange(products);
                     await context.SaveChangesAsync();
-                }                            
+                }                  
+
+                if(!await context.DeliveryMethods.AnyAsync()) 
+                {
+                    //go from API project to SeedData folder in Infrastructure project
+                    var deliverMethodsData = await File.ReadAllTextAsync("../Infrastructure/Data/SeedData/delivery.json");
+                    var deliverMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliverMethodsData);
+                    context.DeliveryMethods.AddRange(deliverMethods);
+                    await context.SaveChangesAsync();
+                }                             
             }
             catch(Exception ex) {
                 var logger = loggerFactory.CreateLogger<StoreContextSeed>();

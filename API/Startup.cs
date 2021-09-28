@@ -37,7 +37,7 @@ namespace API
 
             services.AddSingleton<IConnectionMultiplexer>( services => {
                 //Generic AddSingleton takes a Func<ISerProvider,T> argument (T= ConnectionMultiplexer)
-                //Use a static Parse methos to create instance of ConfigurationOptions (from redis cnn string);
+                //Use a static Parse method to create instance of ConfigurationOptions (from redis cnn string);
                 var configuration = ConfigurationOptions.Parse(_config.GetConnectionString("RedisConnection"), true);
                 //Use Connect() factory method to create ConnectionMultiplexer object    
                 return ConnectionMultiplexer.Connect(configuration);

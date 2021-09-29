@@ -7,6 +7,7 @@ import { IUser } from '../shared/models/user';
 import { ILogin } from '../shared/models/login';
 import { tap, catchError } from 'rxjs/operators';
 import { IRegister } from '../shared/models/register';
+import { IAddress } from '../shared/models/address';
 
 @Injectable({
   providedIn: 'root'
@@ -50,13 +51,15 @@ export class AccountService {
   }
 
   public loadCurrentUser(token: string): Observable<IUser>  {
+    console.log(`Token: ${token}`);
     if(!token) {
       this.logout();
       return of(null);
     }
 
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`); 
-    return this.http.get<IUser>(`${this.baseUrl}account/`,{headers: headers}).pipe(
+    //const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`); 
+    //return this.http.get<IUser>(`${this.baseUrl}account/`,{headers: headers}).pipe(
+    return this.http.get<IUser>(`${this.baseUrl}account/`).pipe(
       tap((user) =>{
         if(user) {
           this.currentUserSource$.next(user);
@@ -71,6 +74,14 @@ export class AccountService {
       })       
     );
   }  
+
+  public getUserAddress() {
+    return this.http.get<IAddress>(`${this.baseUrl}account/address`);
+  }
+
+  public updateUserAddress(address: IAddress) {
+    return this.http.put<IAddress>(`${this.baseUrl}account/address`, address);
+  }
 
   // public getCurrentUserValue(): IUser {
   //   return this.currentUserSource$.getValue();

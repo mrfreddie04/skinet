@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http';
 import { EMPTY, Observable, throwError } from 'rxjs';
 import { NavigationBehaviorOptions, Router } from '@angular/router';
-import { catchError, delay } from 'rxjs/operators';
+import { catchError, delay, tap } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
 @Injectable()
@@ -17,7 +17,10 @@ export class ErrorInterceptor implements HttpInterceptor {
   constructor(private router: Router, private toastr: ToastrService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    //console.log("Error Interceptor In");
+
     return next.handle(request).pipe(
+      //tap(()=>{console.log("Error Interceptor Out");}),
       catchError( (error, caught) => {
         //error - represents HttpErrorResponse object - we need to check Status property
         if(error && error instanceof HttpErrorResponse) {

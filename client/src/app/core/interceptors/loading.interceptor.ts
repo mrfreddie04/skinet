@@ -7,7 +7,7 @@ import {
   HttpInterceptor
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { delay, finalize } from 'rxjs/operators';
+import { delay, finalize, tap } from 'rxjs/operators';
 
 @Injectable()
 export class LoadingInterceptor implements HttpInterceptor {
@@ -15,6 +15,7 @@ export class LoadingInterceptor implements HttpInterceptor {
   constructor(private busyService: BusyService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    //console.log("Loading Interceptor In");
     if(request.url.includes("account/emailexists")) 
     {
       return next.handle(request);
@@ -25,6 +26,7 @@ export class LoadingInterceptor implements HttpInterceptor {
           
       return next.handle(request).pipe(
         delay(1000),
+        //tap(()=>{console.log("Loading Interceptor Out");}),
         finalize( () => {
           this.busyService.idle();
         })

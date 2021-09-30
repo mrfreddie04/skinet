@@ -11,7 +11,7 @@ using API.Extensions;
 
 namespace API.Controllers
 {
-  [Authorize]
+    [Authorize]
     public class OrdersController : BaseApiController
     {
         private readonly IOrderService _orderService;
@@ -50,7 +50,7 @@ namespace API.Controllers
         }
 
         [HttpGet]    
-        public async Task<ActionResult<IReadOnlyList<OrderReadDto>>> GetOrdersForUser(int id)
+        public async Task<ActionResult<IReadOnlyList<OrderReadDto>>> GetOrdersForUser()
         {
             var email = User.RetrieveEmailFromPrincipal();
             var orders = await _orderService.GetOrdersForUserAsync(email);

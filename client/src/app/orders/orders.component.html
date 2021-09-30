@@ -1,0 +1,31 @@
+<div class="container mt-2">
+  <div *ngIf="!orders">
+    <h4>You have no orders</h4>
+  </div>
+
+  <ng-container *ngIf="orders">
+    <div class="row">
+      <div class="col-12">
+        <table class="table table-hover" style="cursor: pointer;">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Order</th>
+              <th scope="col">Date</th>   
+              <th scope="col">Total</th>  
+              <th scope="col">Status</th>                                                                                  
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let order of orders" (click)="onClick(order.id)">
+              <th scope="row"># {{order.id}}</th>
+              <td>{{order.orderDate | date:"medium"}}</td> 
+              <td>{{order.total | currency}}</td>       
+              <td>{{order.status}}</td>   
+            </tr> 
+          </tbody>            
+        </table>
+      </div>
+    </div>  
+  </ng-container>
+</div>  
+

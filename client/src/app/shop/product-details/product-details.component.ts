@@ -20,7 +20,6 @@ export class ProductDetailsComponent implements OnInit {
     private bcService: BreadcrumbService,
     private basketService: BasketService
   ) { 
-    this.route.snapshot.paramMap.get("id");
     this.bcService.set("@productDetails", " ");
   }
 

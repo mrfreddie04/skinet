@@ -13,7 +13,7 @@ namespace Core.Entities.OrderAggregate
 
         public Order(
             IReadOnlyList<OrderItem> orderItems, string buyerEmail, Address shipToAddress, 
-            int deliveryMethodId, decimal subTotal
+            int deliveryMethodId, decimal subTotal, string paymentItentId
         )
         {
             BuyerEmail = buyerEmail;
@@ -21,6 +21,7 @@ namespace Core.Entities.OrderAggregate
             DeliveryMethodId = deliveryMethodId;
             OrderItems = orderItems;
             SubTotal = subTotal;
+            PaymentItentId = paymentItentId;
         }
 
         public string BuyerEmail { get; set; }

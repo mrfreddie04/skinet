@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -16,9 +16,19 @@ export class BasketService {
   private basketTotalSource = new BehaviorSubject<IBasketTotals>(null); 
   public basket$ =  this.basketSource.asObservable();
   public basketTotal$ =  this.basketTotalSource.asObservable();
-  public shipping: number = 0;
+  //public shipping: number = 0;
 
   constructor(private http: HttpClient) { }
+
+  public createPaymentIntent() {
+    const basket = this.basketSource.getValue();
+    return this.http.post<IBasket>(`${this.baseUrl}payments/${basket.id}`,{})
+      .pipe(
+        tap( (basket: IBasket) =>{
+          this.basketSource.next(basket);
+        })
+      );
+  }
 
   public getBasket(id: string): Observable<IBasket> {
     return this.http.get<IBasket>(`${this.baseUrl}basket?id=${id}`)
@@ -30,7 +40,7 @@ export class BasketService {
       );  
   }
 
-  public setBasket(basket: IBasket) {
+  private setBasket(basket: IBasket) {
     return this.http.post<IBasket>(`${this.baseUrl}basket`, basket)
       .subscribe( 
         (basket: IBasket) => {
@@ -42,7 +52,7 @@ export class BasketService {
         }  
       );
   }
-
+    
   public deleteBasket(basket: IBasket) { 
     return this.http.delete(`${this.baseUrl}basket?id=${basket.id}`)
       .subscribe( 
@@ -110,8 +120,12 @@ export class BasketService {
   }
 
   public setShippingPrice(shippingMethod: IDeliveryMethod) {
-    this.shipping = shippingMethod.price;
-    this.calculateTotals();    
+    const basket = this.getCurrentBasketValue();
+    basket.deliveryMethodId = shippingMethod.id;
+    basket.shippingPrice = shippingMethod.price;
+    //this.calculateTotals();  
+    this.setBasket(basket);
+    
   }
 
   private mapProductItemToBasketItem(item: IProduct, quantity: number): IBasketItem {
@@ -149,7 +163,7 @@ export class BasketService {
       return;
     }
 
-    const shipping = this.shipping;
+    const shipping = basket.shippingPrice ?? 0;//this.shipping;
     const subtotal = basket.items.reduce<number>( 
       (prev: number, item: IBasketItem): number => prev + item.quantity * item.price,
        0

@@ -21,7 +21,6 @@ export class BasketSummaryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log("Source:", this.source);
     this.isEdit$.next((this.source === "basket"));
     this.isContained$.next((this.source === "checkout"));
   }

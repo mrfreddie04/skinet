@@ -12,7 +12,7 @@ import { BasketService } from 'src/app/basket/basket.service';
 })
 export class CheckoutShippingComponent implements OnInit {
   @Input() checkoutForm: FormGroup;
-  public deliveryMethods: IDeliveryMethod[]=[];
+  public deliveryMethods: IDeliveryMethod[];
   
   constructor(
     private checkoutService: CheckoutService,

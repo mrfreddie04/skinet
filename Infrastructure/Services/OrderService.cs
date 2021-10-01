@@ -13,14 +13,17 @@ namespace Infrastructure.Services
   {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IBasketRepository _basketRepo;
+    private readonly IPaymentService _paymentService;
 
     public OrderService(
       IBasketRepository basketRepo,
-      IUnitOfWork unitOfWork
+      IUnitOfWork unitOfWork,
+      IPaymentService paymentService
     )
     {
       _unitOfWork = unitOfWork;
       _basketRepo = basketRepo;
+      _paymentService = paymentService;
     }
 
     public async Task<Order> CreateOrderAsync(string buyerEmail, int deliveryMethodId, string basketId, Address shippingAddress)
@@ -63,8 +66,18 @@ namespace Infrastructure.Services
       //4. calculate subtotal
       var subtotal = orderItems.Sum( oi => oi.Price * oi.Quantity);
 
+      //4a. Check if an order with this intentid already exists
+      var spec = new OrderByPaymentIntentIdSpecification(basket.PaymentIntentId);
+      var existingOrder = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);  
+
+      if(existingOrder != null) 
+      {
+        _unitOfWork.Repository<Order>().Delete(existingOrder);
+        await _paymentService.CreateOrUpdatePaymentIntent(basketId);
+      }    
+
       //5. Create Order object
-      var order = new Order(orderItems, buyerEmail, shippingAddress, deliveryMethod.Id, subtotal);
+      var order = new Order(orderItems, buyerEmail, shippingAddress, deliveryMethod.Id, subtotal, basket.PaymentIntentId);
 
       //6. Add order to db - need to create functionality to add 
       _unitOfWork.Repository<Order>().Add(order);
@@ -76,7 +89,8 @@ namespace Infrastructure.Services
         return null;
 
       //8. Delete the basket
-      await _basketRepo.DeleteBasketAsync(basketId);  
+      //Do not delete the basket till the payment is completed
+      //await _basketRepo.DeleteBasketAsync(basketId);  
 
       return order;
     }

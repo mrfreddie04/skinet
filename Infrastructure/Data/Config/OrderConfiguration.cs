@@ -12,7 +12,7 @@ namespace Infrastructure.Data.Config
         //Owned Entity
         builder.OwnsOne(o => o.ShipToAddress, b =>
         {
-            //b - Address Builder, could configure the entire Owned ENtity (Address) here
+            //b - Address Builder, could configure the entire Owned Entity (Address) here
             b.WithOwner();
             //...including requirer properties, value contraints, etc...
             //b.Property( a => a.LastName).IsRequired();

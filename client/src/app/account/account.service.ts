@@ -51,7 +51,7 @@ export class AccountService {
   }
 
   public loadCurrentUser(token: string): Observable<IUser>  {
-    console.log(`Token: ${token}`);
+    //console.log(`Token: ${token}`);
     if(!token) {
       this.logout();
       return of(null);

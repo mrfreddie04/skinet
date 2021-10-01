@@ -7,7 +7,7 @@ import {
   HttpErrorResponse
 } from '@angular/common/http';
 import { EMPTY, Observable, throwError } from 'rxjs';
-import { NavigationBehaviorOptions, Router } from '@angular/router';
+import { NavigationBehaviorOptions, NavigationExtras, Router } from '@angular/router';
 import { catchError, delay, tap } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
 
@@ -42,7 +42,7 @@ export class ErrorInterceptor implements HttpInterceptor {
             return EMPTY; //handling completed
           }
           if( error.status === 500) {
-            const navigationExtras: NavigationBehaviorOptions = {
+            const navigationExtras: NavigationExtras = {
               state: { error: error.error }
             };
             this.router.navigateByUrl("/server-error", navigationExtras);

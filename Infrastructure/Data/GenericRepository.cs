@@ -42,11 +42,6 @@ namespace Infrastructure.Data
             return await ApplySpecification(spec).CountAsync();
         }        
 
-        private IQueryable<T> ApplySpecification(ISpecification<T> spec)
-        {
-            return SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), spec);
-        }
-
         public void Add(T entity)
         {
             _context.Set<T>().Add(entity);
@@ -62,5 +57,10 @@ namespace Infrastructure.Data
         {
             _context.Set<T>().Remove(entity);
         }
+
+        private IQueryable<T> ApplySpecification(ISpecification<T> spec)
+        {
+            return SpecificationEvaluator<T>.GetQuery(_context.Set<T>().AsQueryable(), spec);
+        }        
   }
 }

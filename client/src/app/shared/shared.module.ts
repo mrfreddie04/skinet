@@ -4,6 +4,7 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { CdkStepperModule } from '@angular/cdk/stepper';
 import { PagingHeaderComponent } from './components/paging-header/paging-header.component';
 import { PagerComponent } from './components/pager/pager.component';
@@ -25,6 +26,7 @@ import { RouterModule } from '@angular/router';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     PaginationModule.forRoot(),
     CarouselModule.forRoot(),
     BsDropdownModule.forRoot(),

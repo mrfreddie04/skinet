@@ -17,7 +17,9 @@ export class LoadingInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     //console.log("Loading Interceptor In");
     if(request.url.includes("account/emailexists") ||
-      request.method === "POST" && request.url.includes("orders")) 
+      request.method === "POST" && request.url.includes("orders") || 
+      request.method === "DELETE" 
+      ) 
     {
       return next.handle(request);
     }
@@ -35,3 +37,5 @@ export class LoadingInterceptor implements HttpInterceptor {
     }
   }
 }
+
+

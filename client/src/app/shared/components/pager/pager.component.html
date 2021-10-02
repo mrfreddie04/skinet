@@ -1,8 +1,9 @@
 <div class="d-flex justify-content-center" *ngIf="totalCount && totalCount > 0">
-  <pagination 
+  <pagination
     (pageChanged) = "onPageChanged($event)"
     [itemsPerPage] = "pageSize"
     [boundaryLinks] = "true" 
+    [ngModel] = "currentPage"
     [totalItems] = "totalCount"
     previousText = "&lsaquo;" 
     nextText = "&rsaquo;" 

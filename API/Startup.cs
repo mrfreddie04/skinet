@@ -39,6 +39,7 @@ namespace API
                 //Generic AddSingleton takes a Func<ISerProvider,T> argument (T= ConnectionMultiplexer)
                 //Use a static Parse method to create instance of ConfigurationOptions (from redis cnn string);
                 var configuration = ConfigurationOptions.Parse(_config.GetConnectionString("RedisConnection"), true);
+                configuration.AbortOnConnectFail = false;
                 //Use Connect() factory method to create ConnectionMultiplexer object    
                 return ConnectionMultiplexer.Connect(configuration);
             });

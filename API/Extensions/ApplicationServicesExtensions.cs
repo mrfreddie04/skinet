@@ -13,12 +13,15 @@ namespace API.Extensions
         public static IServiceCollection AddApplicationServices(this IServiceCollection services) 
         {
             services.AddScoped<IOrderService,OrderService>();
-            services.AddScoped<IPaymentService,PaymentService>();
+            services.AddScoped<IPaymentService,PaymentService>();            
             services.AddScoped<IProductRepository,ProductRepository>();
             services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
             services.AddScoped<IUnitOfWork,UnitOfWork>();
             services.AddScoped<IBasketRepository,BasketRepository>();
             services.AddScoped<ITokenService,TokenService>();
+
+            //has to be singleton??? to be shared by requests, but... 
+            services.AddSingleton<IResponseCacheService,ResponseCacheService>();
 
             services.Configure<ApiBehaviorOptions>( opt => {
                 opt.InvalidModelStateResponseFactory = actionContext => 

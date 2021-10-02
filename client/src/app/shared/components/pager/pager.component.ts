@@ -13,9 +13,12 @@ interface PageChangedEventArgs {
 export class PagerComponent implements OnInit {
   @Input() pageSize: number;
   @Input() totalCount: number;
+  @Input() currentPage: number = 1;
   @Output() pageChanged = new EventEmitter<number>();
   
-  constructor() { }
+  constructor() {
+    console.log(`Current Page: ${this.currentPage}`);
+  }
 
   ngOnInit(): void {
   }

@@ -9,6 +9,8 @@ using API.Middleware;
 using API.Extensions;
 using StackExchange.Redis;
 using Infrastructure.Identity;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace API
 {
@@ -28,11 +30,12 @@ namespace API
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
 
-            services.AddDbContext<StoreContext>( opt => {                
-                opt.UseSqlite(_config.GetConnectionString("DefaultConnection"));
+            services.AddDbContext<StoreContext>(opt => {
+                opt.UseNpgsql(_config.GetConnectionString("DefaultConnection"));
             });
+
             services.AddDbContext<AppIdentityDbContext>( opt => {                
-                opt.UseSqlite(_config.GetConnectionString("IdentityConnection"));
+                opt.UseNpgsql(_config.GetConnectionString("IdentityConnection"));
             });            
 
             services.AddSingleton<IConnectionMultiplexer>( services => {
@@ -74,6 +77,13 @@ namespace API
 
             app.UseStaticFiles();
 
+            app.UseStaticFiles(new StaticFileOptions(){
+                FileProvider = new PhysicalFileProvider(
+                    Path.Combine(Directory.GetCurrentDirectory(), "Content")
+                ),
+                RequestPath = "/content"
+            });
+
             app.UseCors("CorsPolicy");
 
             // app.UseCors(policy => policy
@@ -90,6 +100,7 @@ namespace API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapFallbackToController("Index","Fallback");
             });
         }
     }

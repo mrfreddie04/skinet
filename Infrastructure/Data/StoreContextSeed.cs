@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Core.Entities;
 using System;
 using Core.Entities.OrderAggregate;
+using System.Reflection;
 
 namespace Infrastructure.Data
 {
@@ -14,11 +15,12 @@ namespace Infrastructure.Data
     {
         public static async Task SeedAsync(StoreContext context, ILoggerFactory loggerFactory) 
         {
+            var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             try {
                 if(!await context.ProductBrands.AnyAsync()) 
                 {
                     //go from API project to SeedData folder in Infrastructure project
-                    var brandsData = await File.ReadAllTextAsync("../Infrastructure/Data/SeedData/brands.json");
+                    var brandsData = await File.ReadAllTextAsync($"{path}/Data/SeedData/brands.json");
                     var brands = JsonSerializer.Deserialize<List<ProductBrand>>(brandsData);
                     context.ProductBrands.AddRange(brands);
                     await context.SaveChangesAsync();
@@ -27,7 +29,7 @@ namespace Infrastructure.Data
                 if(!await context.ProductTypes.AnyAsync()) 
                 {
                     //go from API project to SeedData folder in Infrastructure project
-                    var typesData = await File.ReadAllTextAsync("../Infrastructure/Data/SeedData/types.json");
+                    var typesData = await File.ReadAllTextAsync($"{path}/Data/SeedData/types.json");
                     var types = JsonSerializer.Deserialize<List<ProductType>>(typesData);
                     context.ProductTypes.AddRange(types);
                     await context.SaveChangesAsync();
@@ -36,7 +38,7 @@ namespace Infrastructure.Data
                 if(!await context.Products.AnyAsync()) 
                 {
                     //go from API project to SeedData folder in Infrastructure project
-                    var productsData = await File.ReadAllTextAsync("../Infrastructure/Data/SeedData/products.json");
+                    var productsData = await File.ReadAllTextAsync($"{path}/Data/SeedData/products.json");
                     var products = JsonSerializer.Deserialize<List<Product>>(productsData);
                     context.Products.AddRange(products);
                     await context.SaveChangesAsync();
@@ -45,7 +47,7 @@ namespace Infrastructure.Data
                 if(!await context.DeliveryMethods.AnyAsync()) 
                 {
                     //go from API project to SeedData folder in Infrastructure project
-                    var deliverMethodsData = await File.ReadAllTextAsync("../Infrastructure/Data/SeedData/delivery.json");
+                    var deliverMethodsData = await File.ReadAllTextAsync($"{path}/Data/SeedData/delivery.json");
                     var deliverMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliverMethodsData);
                     context.DeliveryMethods.AddRange(deliverMethods);
                     await context.SaveChangesAsync();

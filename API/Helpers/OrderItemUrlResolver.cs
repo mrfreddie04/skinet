@@ -19,8 +19,8 @@ namespace API.Helpers
     {
         if(!string.IsNullOrEmpty(source.ItemOrdered.PictureUrl)) 
         {
-            string baseApi =_config["ApiUrl"];
-            return $"{baseApi}{source.ItemOrdered.PictureUrl}";
+            string apiUrl =_config["ApiUrl"];
+            return $"{apiUrl}{source.ItemOrdered.PictureUrl}";
         }
         return null;
     }

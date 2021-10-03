@@ -1,14 +1,15 @@
+using System;
 using System.Threading.Tasks;
+using System.IO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
+using Stripe;
 using Core.Entities;
 using Core.Interfaces;
 using API.Errors;
-using System.IO;
-using Stripe;
 using Order = Core.Entities.OrderAggregate.Order;
-using Microsoft.Extensions.Logging;
-using System;
 
 namespace API.Controllers
 {
@@ -16,11 +17,18 @@ namespace API.Controllers
     {
         private readonly IPaymentService _paymentService;
         private readonly ILogger<PaymentsController> _logger;
-        private const string WhSecret = "whsec_B9pDAnlCozxll7jKZVku8s74vaJhuaQp"; //we provide secret later
-        public PaymentsController(IPaymentService paymentService, ILogger<PaymentsController> logger)
+        private readonly IConfiguration _config;
+        private readonly string _whSecret; 
+        public PaymentsController(
+            IPaymentService paymentService, 
+            ILogger<PaymentsController> logger,
+            IConfiguration config
+        )
         {
             _paymentService = paymentService;
             _logger = logger;
+            _config = config;
+            _whSecret = _config.GetSection("StripeSettings:WhSecret").Value;
         }
 
         [Authorize]
@@ -41,15 +49,18 @@ namespace API.Controllers
             var json = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
             
             //WhSecret verification is like checking JWT signature.
-            var stripeEvent = EventUtility.ConstructEvent(json, Request.Headers["Stripe-Signature"], WhSecret);
+            var stripeEvent = EventUtility.ConstructEvent(json, Request.Headers["Stripe-Signature"], _whSecret);
 
             PaymentIntent intent;
             Order order; 
+
+            Console.WriteLine($"Stripe.Event ${stripeEvent.Type}");
 
             switch(stripeEvent.Type) 
             {
                 case "payment_intent.succeeded": 
                     intent = (PaymentIntent) stripeEvent.Data.Object;
+                    Console.WriteLine($"Payment Intent ${intent.Id}");
                     _logger.LogInformation("Payment Succeeded: ", intent.Id);
                     //TODO: update order with new status
                     order = await _paymentService.UpdateOrderPaymentSucceeded(intent.Id); 
